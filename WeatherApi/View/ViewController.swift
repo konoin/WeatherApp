@@ -14,7 +14,7 @@ class ViewController: UIViewController {
     let weatherIconImageView: UIImageView = {
         let weatherImageView = UIImageView()
         weatherImageView.translatesAutoresizingMaskIntoConstraints = false
-        weatherImageView.image = UIImage(systemName: "cloud.rain.fill")
+        weatherImageView.image = UIImage(systemName: "")
         return weatherImageView
     }()
     
@@ -22,16 +22,16 @@ class ViewController: UIViewController {
         let cityLabel = UILabel()
         cityLabel.translatesAutoresizingMaskIntoConstraints = false
         cityLabel.font = .monospacedSystemFont(ofSize: 20, weight: .heavy)
-        cityLabel.text = "Minsk"
         cityLabel.textAlignment = .center
+        cityLabel.text = ""
         return cityLabel
     }()
     
     let temperatureLabel: UILabel = {
         let tempertureLabel = UILabel()
         tempertureLabel.translatesAutoresizingMaskIntoConstraints = false
-        tempertureLabel.text = "123"
         tempertureLabel.textAlignment = .center
+        tempertureLabel.text = ""
         tempertureLabel.font = .monospacedSystemFont(ofSize: 20, weight: .heavy)
         return tempertureLabel
     }()
@@ -39,8 +39,8 @@ class ViewController: UIViewController {
     let feelsLikeTemperatureLabel: UILabel = {
         let feelsLikeTemperatureLabel = UILabel()
         feelsLikeTemperatureLabel.translatesAutoresizingMaskIntoConstraints = false
-        feelsLikeTemperatureLabel.text = "123"
         feelsLikeTemperatureLabel.textAlignment = .center
+        feelsLikeTemperatureLabel.text = ""
         feelsLikeTemperatureLabel.font = .monospacedSystemFont(ofSize: 20, weight: .heavy)
         return feelsLikeTemperatureLabel
     }()
@@ -48,13 +48,12 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        networkWeatherManager.onCompliteon = { currentWeather in
-            
+        networkWeatherManager.onCompliteon = { [weak self] currentWeather in
+            guard let self = self else { return }
+            self.updateInterface(weather: currentWeather)
         }
         networkWeatherManager.fetchCurrentWeather(forCity: "London")
-        
         setConstraints()
-        
     }
     
     let searchButton: UIButton = {
@@ -66,8 +65,17 @@ class ViewController: UIViewController {
     }()
     
     @objc func searchPresed(_ sender: UIButton) {
-        self.presentSearchAlertController(withTitle: "Enter city name", message: nil, style: .alert) { city in
+        self.presentSearchAlertController(withTitle: "Enter city name", message: nil, style: .alert) { [unowned self] city in
             self.networkWeatherManager.fetchCurrentWeather(forCity: city)
+        }
+    }
+    
+    func updateInterface(weather: CurrentWeather) {
+        DispatchQueue.main.async {
+        self.cityLabel.text = weather.cityName
+        self.temperatureLabel.text = "Temperature: " + weather.temperatureString + "ºC"
+        self.feelsLikeTemperatureLabel.text = "Feels like: " + weather.feelsLikeTemperatureString + "ºC"
+        self.weatherIconImageView.image = UIImage(systemName: weather.systemIconNameString)
         }
     }
     
