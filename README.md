@@ -1,6 +1,5 @@
 # WeatherApp
 
-# RockPaperScissors
 iOS Study Project
 
 ## This application uses UIKit elements. Application was written programmaticaly.
