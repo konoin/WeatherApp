@@ -44,13 +44,17 @@ class ViewController: UIViewController {
         feelsLikeTemperatureLabel.font = .monospacedSystemFont(ofSize: 20, weight: .heavy)
         return feelsLikeTemperatureLabel
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        networkWeatherManager.delegate = self
+        networkWeatherManager.onCompliteon = { currentWeather in
+            
+        }
         networkWeatherManager.fetchCurrentWeather(forCity: "London")
+        
         setConstraints()
+        
     }
     
     let searchButton: UIButton = {
@@ -104,8 +108,4 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: NetworkWeatherManagerDelegate {
-    func updateInterface(_: NetworkWeatherManager, with currentWeather: CurrentWeather) {
-    }
-}
 
