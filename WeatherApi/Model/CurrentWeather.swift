@@ -37,7 +37,6 @@ struct CurrentWeather {
             return "cloud.fill"
         default:
             return "nosign"
-            
         }
     }
     
